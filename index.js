@@ -29,6 +29,11 @@ async function run() {
             const cursor = await packagesCollection.findOne(query);
             res.send(cursor)
         })
+        app.post('/packages', async (req,res)=>{
+            const data = req.body;
+            const result = await packagesCollection.insertOne(data);
+            res.send(result);
+        })
     }
     finally {
         console.log()

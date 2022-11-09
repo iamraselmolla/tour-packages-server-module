@@ -13,50 +13,68 @@ async function run() {
         const packagesCollection = client.db("tour").collection("packages")
         const reviewsCollection = client.db("tour").collection("reviews")
         app.get('/home', async (req, res) => {
-            const query =  {};
-            const cursor  = packagesCollection.find(query).limit(3);
+            const query = {};
+            const cursor = packagesCollection.find(query).limit(3);
             const allData = await cursor.toArray();
             res.send(allData);
         })
         app.get('/packages', async (req, res) => {
-            const query =  {};
-            const cursor  = packagesCollection.find(query);
+            const query = {};
+            const cursor = packagesCollection.find(query);
             const allData = await cursor.toArray();
             res.send(allData);
         })
         app.get('/packages/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: ObjectId(id)}
+            const query = { _id: ObjectId(id) }
             const cursor = await packagesCollection.findOne(query);
             res.send(cursor)
         })
-        app.post('/packages', async (req,res)=>{
+        app.post('/packages', async (req, res) => {
             const data = req.body;
             const result = await packagesCollection.insertOne(data);
             res.send(result);
         })
-        app.post('/post-review', async(req, res) => {
+        app.post('/post-review', async (req, res) => {
             const postData = req.body;
             const result = await reviewsCollection.insertOne(postData);
             res.send(result)
 
         })
-        app.get('/post-review/:id', async (req, res)=> {
+        app.get('/post-review/:id', async (req, res) => {
             const id = req.params.id
-            const query = {packageId: id}
+            const query = { packageId: id }
             const cursor = reviewsCollection.find(query);
             const result = await cursor.toArray();
             res.send(result)
         })
-        app.delete('/post-review/:id', async(req, res) => {
+        app.delete('/post-review/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id : ObjectId(id)}
+            const query = { _id: ObjectId(id) }
             const result = await reviewsCollection.deleteOne(query);
             res.send(result);
         })
+        app.get('/edit-comment/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await reviewsCollection.findOne(query)
+            res.send(result)
+        })
+        app.put('/edit-comment/:id', async (req, res) => {
+            const id = req.params.id;
+            const status = req.body;
+            console.log(status)
+            const query = {_id : ObjectId(id)};;
+            const updatedDoc = {
+                $set:{
+                    comments: status.updateComment
+                }
+            }
+            const result = await reviewsCollection.updateOne(query, updatedDoc);
+            res.send(result)
+        })
     }
     finally {
-        console.log()
     }
 }
 run().catch(e => console.log(e.message))

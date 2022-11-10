@@ -33,7 +33,7 @@ async function run() {
         const reviewsCollection = client.db("tour").collection("reviews")
         app.get('/home', async (req, res) => {
             const query = {};
-            const cursor = packagesCollection.find(query).limit(3);
+            const cursor = packagesCollection.find(query).sort({insertTime: -1}).limit(3);
             const allData = await cursor.toArray();
             res.send(allData);
         })
@@ -46,7 +46,7 @@ async function run() {
         })
         app.get('/services', async (req, res) => {
             const query = {};
-            const cursor = packagesCollection.find(query);
+            const cursor = packagesCollection.find(query).sort({insertTime: -1});
             const allData = await cursor.toArray();
             res.send(allData);
         })
@@ -55,7 +55,7 @@ async function run() {
             if(req.query.email){
                 query = {email: req.query.email}
             }
-            const cursor = packagesCollection.find(query);
+            const cursor = packagesCollection.find(query).sort({insertTime: -1});
             const allData = await cursor.toArray();
             res.send(allData);
         })
@@ -80,7 +80,7 @@ async function run() {
             
             const id = req.params.id
             const query = { packageId: id }
-            const cursor = reviewsCollection.find(query);
+            const cursor = reviewsCollection.find(query).sort({insertTime: -1});
             const result = await cursor.toArray();
             res.send(result)
         })
@@ -120,7 +120,7 @@ async function run() {
             if(req.query.email){
                 query = {email: req.query.email}
             }
-            const cursor = reviewsCollection.find(query)
+            const cursor = reviewsCollection.find(query).sort({insertTime: -1});
             const result = await cursor.toArray()
             res.send(result);
 
